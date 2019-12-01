@@ -40,6 +40,8 @@ Configuration options with defaults shown:
   "apiKey": "", // apiKey credential found in PTP profile security tab.
   "interval": -1 // Interval, in minutes, that you'd like to run the script at. 
   "downloadPath": -1, // Path to download .torrent files to. Optional.
+  "dataDirectoryPath": -1, // Path to directory to size check.
+  "dataDirectoryMaxSize": -1, // Max size of directory.
   "discordWebhookUrl": -1, // Discord webhook URI. Optional.
   "minseeders": -1, // Minimum amount of seeders. Set to -1 for unlimited.
   "maxseeders": -1, // Maximum amount of seeders. Set to -1 for unlimited.
@@ -56,9 +58,9 @@ Configuration options with defaults shown:
 }
 ```
 
-### maxAge
+### dataDirectoryPath and dataDirectoryMaxSize
 
-Set `maxAge` to filter freeleech torrents by upload date, in minutes. Be aware that some torrents are given freeleech status well after initial upload, & in this case those torrents may not be filtered if this config is set.
+Prevent a torrent from downloading if it's downloaded size would increase the size of the directory at dataDirectoryPath beyond the limit in (GBs) set by dataDirectoryMaxSize. Both of these configs must be set. This **does not** take into account the size of currently downloading torrents, so it's advisable to set this slightly below your total max disk space.
 
 ### Discord notifications
 
@@ -88,3 +90,8 @@ These options can be specified in a comma separated list within a string. For ex
 Release groups can be specified in a comma separated list within a string. 
 
 E.g., `"releaseGroup": "ntg,epsilon"`
+
+### maxAge
+
+Set `maxAge` to filter freeleech torrents by upload date, in minutes. Be aware that some torrents are given freeleech status well after initial upload, & in this case those torrents may not be filtered if this config is set.
+

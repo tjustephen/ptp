@@ -3,6 +3,8 @@
 	"apiKey": "",
 	"interval": -1,
 	"downloadPath": -1,
+	"dataDirectoryPath": -1,
+	"dataDirectoryMaxSize": -1,
 	"discordWebhookUrl": -1,
 	"minSeeders": -1,
 	"maxSeeders": -1,
