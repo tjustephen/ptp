@@ -60,7 +60,7 @@ Configuration options with defaults shown:
 
 ### dataDirectoryPath and dataDirectoryMaxSize
 
-Prevent a torrent from downloading if it's downloaded size would increase the size of the directory at dataDirectoryPath beyond the limit in (GBs) set by dataDirectoryMaxSize. Both of these configs must be set. This **does not** take into account the size of currently downloading torrents, so it's advisable to set this slightly below your total max disk space to provide a small buffer.
+Prevent a torrent from downloading if it's downloaded size would increase the size of the directory at `dataDirectoryPath` beyond the limit in (GBs) set by `dataDirectoryMaxSize`. Both of these configs must be set. This **does not** take into account the size of currently downloading torrents, so it's advisable to set this slightly below your total max disk space to provide a small buffer.
 
 ### Discord notifications
 
