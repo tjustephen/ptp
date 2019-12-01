@@ -30,7 +30,7 @@ const getConfig = () => {
 };
 
 exports.validateConfig = async () => {
-	const configKeys = ['apiUser','apiKey','interval','downloadPath','discordWebhookUrl','minSeeders','maxSeeders','minLeechers','maxLeechers','minSize','maxSize','maxAge','resolution','codec','container','source','releaseGroup'],
+	const configKeys = ['apiUser','apiKey','interval','downloadPath','dataDirectoryPath','dataDirectoryMaxSize','discordWebhookUrl','minSeeders','maxSeeders','minLeechers','maxLeechers','minSize','maxSize','maxAge','resolution','codec','container','source','releaseGroup'],
 		config = getConfig(),
 		configFormatError = 'The format of config.json has changed. Please ensure it contains the exact same format and properties as example.config.json',
 		downloadPathError = 'Specified downloadPath directory does not exist. Please check your config.';
@@ -42,6 +42,11 @@ exports.validateConfig = async () => {
 
 	if (configKeys.length !== Object.keys(config).length || !configKeys.every(key => config[key] !== undefined)) {
 		console.log(configFormatError);
+		process.exit();
+	}
+
+	if ((config.dataDirectoryPath && !config.dataDirectoryMaxSize) || (!config.dataDirectoryPath && config.dataDirectoryMaxSize)) {
+		console.log('Please add both a dataDirectoryPath and dataDirectoryMaxSize to your config if you wish to make use of the directory size check');
 		process.exit();
 	}
 
@@ -93,110 +98,6 @@ const checkStatus = response => new Promise((resolve, reject) => {
 	}
 });
 
-const isOlderThan = (date, minutes) => {
-	const earliest = 1000 * minutes * 60,
-		time = Date.now() - earliest;
-	
-	return new Date(date) < time;
-};
-
-exports.torrentMatchesFilters = (torrent, config, cache) => {
-	let isMatch = true;
-
-	const minSize = config.minsize === -1 ? -1 : Number(config.minsize) * 1024 * 1024,
-		maxSize = config.maxsize === -1 ? -1 : Number(config.maxsize) * 1024 * 1024;
-
-	if (cache.freeleech.includes(torrent.Id)) {
-		return false;
-	}
-
-	if (config.minSeeders !== -1) {
-		if (torrent.Seeders < config.minSeeders) {
-			return false;
-		}
-	}
-
-	if (config.maxSeeders !== -1) {
-		if(torrent.Seeders > config.maxSeeders) {
-			return false;
-		}
-	}
-
-	if (config.minLeechers !== -1) {
-		if(torrent.Leechers < config.minLeechers) {
-			return false;
-		}
-	}
-
-	if (config.maxLeechers !== -1) {
-		if(torrent.Leechers > config.maxLeechers) {
-			return false;
-		}
-	}
-
-	if (config.minSize !== -1) {
-		if(torrent.Size < minSize) {
-			return false;
-		}
-	}
-
-	if (config.maxSize !== -1) {
-		if(torrent.Size > maxSize) {
-			return false;
-		}
-	}
-
-	if (config.maxAge !== -1) {
-		if(isOlderThan(torrent.UploadTime, config.maxAge)) {
-			return false;
-		}
-	}
-
-	if (config.resolution !== -1 && config.resolution.length) {
-		const resolutions = config.resolution.includes(',') ? config.resolution.split(',') : [config.resolution];
-
-		if (!resolutions.find(resolution => resolution.trim().toLowerCase() === torrent.Resolution.toLowerCase())) {
-			return false;
-		}
-	}
-
-	if (config.codec !== -1 && config.codec.length) {
-		const codecs = config.codec.includes(',') ? config.codec.split(',') : [config.codec];
-
-		if (!codecs.find(codec => codec.trim().toLowerCase() === torrent.Codec.toLowerCase())) {
-			return false;
-		}
-	}
-
-	if (config.container !== -1 && config.container.length) {
-		const containers = config.container.includes(',') ? config.container.split(',') : [config.container];
-
-		if (!containers.find(container => container.trim().toLowerCase() === torrent.Container.toLowerCase())) {
-			return false;
-		}
-	}
-
-	if (config.source !== -1 && config.source.length) {
-		const sources = config.source.includes(',') ? config.source.split(',') : [config.source];
-
-		if (!sources.find(source => source.trim().toLowerCase() === torrent.Source.toLowerCase())) {
-			return false;
-		}
-	}
-
-	if (config.releaseGroup !== -1 && config.releaseGroup.length) {
-		const releaseGroups = config.releaseGroup.includes(',') ? config.releaseGroup.split(',') : [config.releaseGroup];
-
-		if (torrent.ReleaseGroup === null) return false;
-
-		if (!releaseGroups.find(releaseGroup => releaseGroup.trim().toLowerCase() === torrent.ReleaseGroup.toLowerCase())) {
-			return false;
-		}
-	}
-
-	return isMatch;
-};
-
 const getTorrentsFromResponse = data => {
 	return data.Movies.map(group => {
 		const torrent = group.Torrents[0];
@@ -244,16 +145,4 @@ exports.fetchTorrents = async config => {
 		console.log(error);
 		process.exit();
 	}
-};
-
-exports.formatBytes = bytes =>{
-	if (bytes === 0){
-		return '0 B';
-	}
-
-	const k = 1024,
-		sizes = [ 'B', 'KB', 'MB', 'GB', 'TB', 'PB' ],
-		i = Math.floor(Math.log(bytes) / Math.log(k));
-
-	return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
 };

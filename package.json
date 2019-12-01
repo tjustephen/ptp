@@ -13,6 +13,7 @@
   "dependencies": {
     "directory-exists": "^2.0.1",
     "discord.js": "^11.5.1",
+    "du": "^1.0.0",
     "get-user-locale": "^1.2.0",
     "import-fresh": "^3.1.0",
     "node-fetch": "^2.6.0"

@@ -1,6 +1,6 @@
-const { validateConfig, getCache, torrentMatchesFilters, fetchTorrents, writeTorrentCache } = require('./utils'),
-	sendDiscordNotification = require('./modules/discord'),
-	downloadTorrent = require('./modules/download');
+const { getCache, validateConfig, fetchTorrents } = require('./utils'),
+	Runner = require('./utils/middleware.js'),
+	{ checkDiskspace, matchesFilters, downloadTorrent, sendDiscordNotification, writeCache } = require('./middlewares');
 
 module.exports = async function() {
 	try {
@@ -8,15 +8,12 @@ module.exports = async function() {
 			config = await validateConfig(), 
 			{ torrents, authKey, passKey } = await fetchTorrents(config);
 
-		for (const torrent of torrents) {
-			if (torrentMatchesFilters(torrent, config, cache)) {
-				await downloadTorrent({ torrent, authKey, passKey }, config);
+		const runner = new Runner();
 
-				await sendDiscordNotification({ torrent, authKey, passKey }, config);
-			}
-		}
+		runner.use(matchesFilters, checkDiskspace, downloadTorrent, sendDiscordNotification);
+		runner.after(writeCache);
 
-		writeTorrentCache(cache, torrents);
+		await runner.run(torrents, { authKey, passKey, cache, config });
 	} catch(error) {
 		console.log(error);
 	}

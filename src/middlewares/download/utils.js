@@ -1,7 +1,7 @@
 const fetch = require('node-fetch'),
 	fs = require('fs');
 
-const downloadTorrentFile = async (torrent, path, authKey, passKey) => {
+exports.downloadTorrentFile = async (torrent, path, authKey, passKey) => {
 	const url = `https://passthepopcorn.me/torrents.php?action=download&id=${torrent.Id}&authkey=${authKey}&torrent_pass=${passKey}`,
 		response = await fetch(url),
 		fileStream = fs.createWriteStream(`${path}/${torrent.Id}.torrent`);
@@ -18,14 +18,3 @@ const downloadTorrentFile = async (torrent, path, authKey, passKey) => {
 	});
 };
 
-module.exports = async ({ torrent, authKey, passKey }, config) => {
-	if (!config.downloadPath) {
-		return;
-	}
-
-	try {
-		return await downloadTorrentFile(torrent, config.downloadPath, authKey, passKey);
-	} catch(error) {
-		console.log('Could not download torrent:', error);
-	}
-};

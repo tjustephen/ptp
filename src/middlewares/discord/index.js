@@ -1,6 +1,6 @@
 const fetch = require('node-fetch'),
 	discord = require('discord.js'),
-	utils = require('../../utils');
+	{ formatBytes } = require('./utils.js');
 
 const getDiscordClient = (() => {
 	let discordClient;
@@ -19,9 +19,9 @@ const getDiscordClient = (() => {
 	};
 })();
 
-module.exports = async ({ torrent, authKey, passKey }, config) => {
+module.exports = async (torrent, { authKey, passKey, config }, next) => {
 	if (config.discordWebhookUrl === -1) {
-		return;
+		return await next();
 	}
 
 	const webhook = await getDiscordClient(config.discordWebhookUrl);
@@ -34,7 +34,7 @@ module.exports = async ({ torrent, authKey, passKey }, config) => {
 		.addField('Source', torrent.Source, true)
 		.addField('Codec', torrent.Codec, true)
 		.addField('Resolution', torrent.Resolution, true)
-		.addField('Size', utils.formatBytes(torrent.Size), true)
+		.addField('Size', formatBytes(torrent.Size), true)
 		.addField('Seeders', torrent.Seeders, true)
 		.addField('Leechers', torrent.Leechers, true)
 		.addField('Torrent Permalink', `[Click Here](${permalink})`, true)
@@ -42,4 +42,6 @@ module.exports = async ({ torrent, authKey, passKey }, config) => {
 
 	webhook.send(embed);
 	console.log(`\Discord Webook sent: ${torrent.ReleaseName}`);
+
+	await next();
 };
