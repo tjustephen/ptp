@@ -1,36 +1,36 @@
 module.exports = class MiddlewareRunner {
 
-    constructor() {
+	constructor() {
 		this.beforeMiddleware = [];
-        this.middleware = [];
+		this.middleware = [];
 		this.afterMiddleware = [];
-    }
+	}
 
 	before(...fns) {
 		fns.forEach(fn => this.beforeMiddleware.push(fn));
 	}
 
-    use(...fns) {
+	use(...fns) {
 		fns.forEach(fn => this.middleware.push(fn));
-    }
+	}
 
 	after(...fns) {
 		fns.forEach(fn => this.afterMiddleware.push(fn));
 	}
 
-    async execute(middlewares, ...args) {
-        const next = async index => {
+	async execute(middlewares, ...args) {
+		const next = async index => {
 			const middleware = middlewares[index];
 
-            if(!middleware) {
-                return;
-            }
+			if(!middleware) {
+				return;
+			}
 
-            await middleware.call(null, ...args, next.bind(next, 1+index));
-        };
+			await middleware.call(null, ...args, next.bind(next, 1+index));
+		};
 
-        await next(0);
-    }
+		await next(0);
+	}
 
 	async run(list,...args) {
 		await this.execute(this.beforeMiddleware, list, ...args);

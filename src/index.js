@@ -1,6 +1,6 @@
 const { getCache, validateConfig, fetchTorrents } = require('./utils'),
 	Runner = require('./utils/middleware.js'),
-	{ checkDiskspace, matchesFilters, downloadTorrent, sendDiscordNotification, writeCache } = require('./middlewares');
+	{ checkDiskspace, matchesFilters, downloadTorrent, notifyDiscord, writeCache } = require('./middlewares');
 
 module.exports = async function() {
 	try {
@@ -10,7 +10,7 @@ module.exports = async function() {
 
 		const runner = new Runner();
 
-		runner.use(matchesFilters, checkDiskspace, downloadTorrent, sendDiscordNotification);
+		runner.use(matchesFilters, checkDiskspace, downloadTorrent, notifyDiscord);
 		runner.after(writeCache);
 
 		await runner.run(torrents, { authKey, passKey, cache, config });
