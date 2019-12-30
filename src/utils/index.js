@@ -240,9 +240,11 @@ exports.fetchTorrents = async config => {
 
 		return { torrents, authKey, passKey };
 	} catch(error) {
-
 		console.log(error);
-		process.exit();
+
+		if(!error.message.includes("Bad Gateway")) {
+			process.exit();
+		}
 	}
 };
 
