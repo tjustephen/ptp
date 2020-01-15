@@ -42,9 +42,8 @@ Add a `downloadPath` to `config.json` to have the torrents added to your torrent
 
 `npm run fill-cache` to fill the freeleech cache with currently available freeleech torrents. This is helpful if you'd like to start downloading future freeleech without flooding your torrent client with past freeleech. This caches all torrents; including those not filtered by your config.
 
-### Run (use pm2)
 
-`pm2 start index.js --name "ptp"`
+`pm2 start index.js --name "ptp"` (Recommended)
 
 
 ## Configuration
