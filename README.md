@@ -11,13 +11,14 @@ Feature requests welcome. Feel free to create a [new issue](https://github.com/e
 ### Prerequisites
 
 [Install Node and NPM](https://tecadmin.net/install-nodejs-with-nvm/) (root not required).
-`wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
 
-nvm install stable
+`wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash`
 
-source .profile
+`nvm install stable`
 
-npm install pm2 -g`
+`source .profile`
+
+`npm install pm2 -g`
 
 ### Install
 
