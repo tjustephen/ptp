@@ -13,13 +13,17 @@ Feature requests welcome. Feel free to create a [new issue](https://github.com/e
 [Install Node and NPM](https://tecadmin.net/install-nodejs-with-nvm/) (root not required).
 `wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash`
 `nvm install stable`
+
 `source .profile`
+
 `npm install pm2 -g`
 
 ### Install
 
 `git clone https://github.com/tjustephen/ptp.git`
+
 `cd ptp`
+
 `npm install` within the project directory.
 
 ### Setup
@@ -37,6 +41,7 @@ Add a `downloadPath` to `config.json` to have the torrents added to your torrent
 `npm run fill-cache` to fill the freeleech cache with currently available freeleech torrents. This is helpful if you'd like to start downloading future freeleech without flooding your torrent client with past freeleech. This caches all torrents; including those not filtered by your config.
 
 ### Run (use pm2)
+
 `pm2 start index.js --name "ptp"`
 
 
