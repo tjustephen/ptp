@@ -38,12 +38,12 @@ Add a `downloadPath` to `config.json` to have the torrents added to your torrent
 
 `npm start` to run manually.
 
-`npm run schedule` to run at an interval of `x` minutes as defined by the `interval` setting in `config.json`. This is helpful for running in screen or tmux.
+`npm run schedule` or `pm2 start npm --name "ptp" --run schedule` to run at an interval of `x` minutes as defined by the `interval` setting in `config.json`. This is helpful for running in screen or tmux.
 
 `npm run fill-cache` to fill the freeleech cache with currently available freeleech torrents. This is helpful if you'd like to start downloading future freeleech without flooding your torrent client with past freeleech. This caches all torrents; including those not filtered by your config.
 
 
-`pm2 start index.js --name "ptp"` (Recommended)
+`pm2 start npm --name "ptp" --start` (Recommended)
 
 
 ## Configuration
